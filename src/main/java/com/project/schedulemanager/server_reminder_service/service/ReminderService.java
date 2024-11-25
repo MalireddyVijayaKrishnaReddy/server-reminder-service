@@ -1,28 +1,21 @@
 package com.project.schedulemanager.server_reminder_service.service;
 
+import com.project.schedulemanager.server_reminder_service.dao.DemoGraphicsDao;
 import com.project.schedulemanager.server_reminder_service.dao.ReminderArchieveDao;
 import com.project.schedulemanager.server_reminder_service.dao.ReminderDao;
 import com.project.schedulemanager.server_reminder_service.entity.Reminder;
 import com.project.schedulemanager.server_reminder_service.entity.ReminderArchieve;
 import com.project.schedulemanager.server_reminder_service.templates.EmailTemplate;
 import com.project.schedulemanager.server_reminder_service.templates.MessageTemplate;
-import org.apache.commons.beanutils.BeanUtils;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.time.format.DateTimeFormatter;
-import java.util.Map.Entry;
-
-import org.apache.logging.log4j.message.Message;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.lang.reflect.Field;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class ReminderService {
@@ -30,14 +23,17 @@ public class ReminderService {
     SMSService smsService;
     ReminderDao reminderDao;
     ReminderArchieveDao reminderArchieveDao;
+    DemoGraphicsDao demoGraphicsDao;
+    private static final String PHONECOUNTRYCODE="+1";
 
 
     @Autowired
-    ReminderService(EmailService emailService, SMSService smsService, ReminderDao reminderDao, ReminderArchieveDao reminderArchieveDao) {
+    ReminderService(EmailService emailService, SMSService smsService, ReminderDao reminderDao, ReminderArchieveDao reminderArchieveDao, DemoGraphicsDao demoGraphicsDao) {
         this.emailService = emailService;
         this.smsService = smsService;
         this.reminderDao = reminderDao;
         this.reminderArchieveDao = reminderArchieveDao;
+        this.demoGraphicsDao = demoGraphicsDao;
 
     }
 
@@ -70,7 +66,7 @@ public class ReminderService {
     }
 
     public void sendReminder(Reminder reminder) {
-        System.out.println(reminder.getReminder_medium());
+        //System.out.println(reminder.getReminder_medium());
         if (reminder.getReminder_medium().contains("EMAIL")) {
 
 
@@ -81,7 +77,11 @@ public class ReminderService {
         if (reminder.getReminder_medium().contains("SMS")) {
             MessageTemplate messageTemplate = new MessageTemplate(reminder);
 
-            System.out.println(smsService.sendMessage(messageTemplate.getBody(),"+14699906715"));
+           // System.out.println(smsService.sendMessage(messageTemplate.getBody(),"+14699906715"));
+            String phoneNumber = PHONECOUNTRYCODE+demoGraphicsDao.getUserDemographics(reminder.getUsername())
+                                                                 .getPhone_number();
+            System.out.println(phoneNumber);
+            smsService.sendMessage(messageTemplate.getBody(),phoneNumber);
         }
         reminder.setReminder_sent("Y");
         reminderDao.updateReminder(reminder);
