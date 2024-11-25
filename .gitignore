@@ -1,0 +1,12 @@
+# Ignore IntelliJ IDEA project files
+.idea/
+
+# Ignore Maven build output
+target/
+
+# Ignore Maven wrapper files
+.mvn/
+
+mvnw
+
+mvnw.cmd

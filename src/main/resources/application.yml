@@ -1,0 +1,48 @@
+
+
+
+server:
+  port: 8081
+spring:
+  application:
+    name: "server-reminder-service"
+  logging:
+    level:
+      ROOT: DEBUG
+      org.springframework.security: DEBUG
+
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          max-age: 3600
+          must-revalidate: true
+
+
+  datasource:
+    url: jdbc:mysql://localhost:3306/local
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: malireddy.666@gmail.com
+    password: "dtyo tild xndt lnkg"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+
+
+twilio:
+  account-sid: "ACc4be2bf9ae1af10e360c65be973b8bd7"
+  auth-token: "870c901d6fd8cf4ad31d02d97b8ebda4"
+  messaging-service-sid: "MGb0d550812b522cb538f12587ae384da6"
+
+
+schedule:
+  fixedRate: 1000000
